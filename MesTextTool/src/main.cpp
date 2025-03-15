@@ -112,7 +112,7 @@ auto main(int argc, char** args) -> int
 	console::fmt::write<console::cdpg::dDfault, console::txt::dark_yellow>(
 		"MesTextTool: Ver %s.\n"
 		"GitHub: https://github.com/cokkeijigen/MesTextTool\n"
-		"Time: %llf %llf\n", _tool_version_name_, time
+		"Time: %llf\n", _tool_version_name_, time
 	);
 
 	console::pause();
