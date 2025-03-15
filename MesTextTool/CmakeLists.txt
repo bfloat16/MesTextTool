@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.20.0)
+project(MesTextTool)
+
+set(CMAKE_CXX_STANDARD 20)
+
+set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
+file(GLOB_RECURSE SOURCES "${SOURCE_DIR}/*.cpp")
+
+add_executable(MesTextTool ${SOURCES})
+include_directories(${SOURCE_DIR})
+
+file(GLOB HEADER_DIR ALL_FILES_AND_DIRS 
+    "${SOURCE_DIR}/*"
+    "${SOURCE_DIR}/*/*"
+)
+list(FILTER HEADER_DIR EXCLUDE REGEX ".*\\..*")
+foreach(H_DIR ${HEADER_DIR})
+    include_directories(${H_DIR})
+endforeach()
+
+set_target_properties(MesTextTool PROPERTIES LINK_FLAGS "/MANIFEST:NO")

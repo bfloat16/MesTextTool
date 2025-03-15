@@ -1,18 +1,29 @@
-# MesRepacker
-### 重新打包MesScript中的文本，本工具仅供技术学习交流使用，禁止一切商业或不法使用！  
-***
-### 导出文本
-将mes文件或者文件夹拖动到exe
-### 导入文本
-首先确保你的文本目录下存在`.MesRepacker`这个文件,然后将整个文本目录到exe上即可<br>
-![Image text](https://github.com/cokkeijigen/MesRepacker/blob/master/picture.png)<br>
-
-### `.MesRepacker`参数详细<br>
+# MesTextTool，一个用于替换Mes脚本内文本的工具。
+## 0x0 输入参数
+```log
+# -LOG or -log 输出日志（可选）
+# PATH Mes文件的目录或者需要导入文本的目录
+MesTextTool.exe [-LOG <optional>] [PATH <must>]
+```
+## 0x1 导出文本
+将`mes文件`或者`文件夹`拖动到exe
+```log
+# 如需查看日志请使用控制台运行：
+MesTextTool.exe -log D:\example\path\mes\
+```
+## 0x02 导入文本
+首先确保你的文本目录下存在`.MesTextTool`这个文件,然后将整个文本目录到exe上即可<br>
+![Image text](https://github.com/cokkeijigen/MesTextTool/blob/master/picture.png)<br>
+```log
+# 如需查看日志请使用控制台运行：
+MesTextTool.exe -log D:\example\path\text\
+```
+### `.MesTextTool`参数详细<br>
 ```
 #InputPath ; 这个是源（未修改）mes文件的目录
-D:\xxxxx\xxxx\xxxx\MES
+D:\YourGames\Name\Advdata\MES
 
-#UseCodePage ; 导入需要转换的编码(CodePage), 使用-nsc之后将不支持
+#UseCodePage ; 导入需要转换的编码(CodePage)
 936 ; 默认： utf-8(65001) -> gbk(936)
 
 #Text-MinLength ; 单行最小字数
@@ -26,17 +37,20 @@ D:\xxxxx\xxxx\xxxx\MES
 
 #After-Replaces ; 格式化后替换文本
 []:[] ; 同上
-
 ```
 ***
-默认情况下，程序会将`sjis`编码转换成`utf8`然后导出  
-此外还支持`gbk`转`utf8`，需要exe的重命名加上`-igbk`，例如`MesRepacker-igbk.exe`  
-如果不需要转换，将`exe`的重命名加上`-nsc`，例如`MesRepacker-nsc.exe`  
-
-程序默认是自动选择mes版本，但是你可以手动选择  
-将exe重命名加上`-s版本简称`，例如`MesRepacker-sdc4.exe`// 配置为dc4
+默认情况下，mes的文本是以`sjis(cp932)`来解析。
+如需指定编码，需要exe的重命名加上`-cp[xxxx]`，例如：
+```
+MesTextTool-cp936.exe ; cp936 -> GBK编码
+```
+程序默认是自动选择mes版本，如需手动指定可以将exe重命名加上`-版本简称`，例如：
+```
+MesTextTool-cp936-dc4.exe ; 以GBK编码打开DC4版本的Mes文件
+```
 | 游戏| 简称 | 
 | :-----| :----: |
+|てんぷれ！|tmpl|
 |fortissimo//Akkord:Bsusvier | ffexa |
 |fortissimo EXS//Akkord:nächsten Phase | ffexs | 
 |D.S.i.F. -Dal Segno-| dsif | 
@@ -64,3 +78,17 @@ D:\xxxxx\xxxx\xxxx\MES
 |D.C.WhiteSeason|dcws|
 |ことり Love Ex P|ktlep|
 |D.C.〜ダ・カーポ〜　温泉編|dcos|
+
+## 0x3 如何编译（Windows）
+**1.前提准备：**
+**安装 [Visual Studio Community](https://visualstudio.microsoft.com/zh-hans/vs/community/)、**
+**[Cmake](https://cmake.org/download/)。**<br>
+**2.使用 `git clone https://github.com/cokkeijigen/MesTextTool`获取源码，**
+**或者直接在`GitHub`上`Code > Download ZIP`下载ZIP并解压。**<br>
+**3.打开`cmd`或者`poweshell`, `cd`到源码路径，运行`build.bat`**
+```sh
+git clone https://github.com/cokkeijigen/MesTextTool
+cd MesTextTool
+build.bat
+```
+**4.运行完`build.bat`，输出exe的路径为源码目录下`.\output\Release\MesTextTool.exe`**
