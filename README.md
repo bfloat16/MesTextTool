@@ -12,7 +12,7 @@ MesTextTool.exe [-LOG <optional>] [PATH <must>]
 MesTextTool.exe -log D:\example\path\mes\
 ```
 ## 0x02 导入文本
-首先确保你的文本目录下存在`.MesTextTool`这个文件,然后将整个文本目录到exe上即可<br>
+首先确保你的文本目录下存在`.MesTextTool`这个文件,然后将整个文本目录拖动到exe上即可<br>
 ![Image text](https://github.com/cokkeijigen/MesTextTool/blob/master/picture.png)<br>
 ```log
 # 如需查看日志请使用控制台运行：
