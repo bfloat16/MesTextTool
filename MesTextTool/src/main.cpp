@@ -72,7 +72,7 @@ auto main(int argc, char** args) -> int
 
 			if (!enable_log)
 			{
-				console::writeline("[PROCESSING...]");
+				console::writeline("[PROCESSING]...");
 			}
 
 			mes::multi_script_helper helper{ input_path, work_path, input_info, input_cdpg };
