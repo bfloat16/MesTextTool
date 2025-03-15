@@ -56,7 +56,12 @@ auto main(int argc, char** args) -> int
 						input_info = mes::script_info::query(arg);
 					}
 					
-					auto value = xstr::to_integer<int32_t>(arg);
+					if (!arg.starts_with("cp"))
+					{
+						continue;
+					}
+
+					auto value{ xstr::to_integer<uint32_t>(arg.substr(2)) };
 					if (value.has_value())
 					{
 						input_cdpg = value.value();
