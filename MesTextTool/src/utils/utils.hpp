@@ -1,10 +1,6 @@
 #pragma once
-#ifndef _FUNCTIONAL_
 #include <functional>
-#endif
-#ifndef _CHRONO_
 #include <chrono>
-#endif
 
 namespace utils {
 
