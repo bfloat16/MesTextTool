@@ -567,12 +567,19 @@ namespace mes {
 				mes_path.assign(CONFIG.InputPath + opt_name);
 			}
 
-			if (!this->m_Helper.read(mes_path, false).is_parsed()) 
+			try {
+				if (!this->m_Helper.read(mes_path, false).is_parsed())
+				{
+					this->on_failure(
+						"Failed to read or parse mes file.",
+						mes_path
+					);
+					continue;
+				}
+			}
+			catch (const std::exception& err)
 			{
-				this->on_failure(
-					"Failed to read or parse mes file.",
-					mes_path
-				);
+				this->on_failure(err.what(), mes_path);
 				continue;
 			}
 
@@ -651,12 +658,20 @@ namespace mes {
 				continue;
 			}
 
-			if (!this->m_Helper.read(file).is_parsed())
+			try {
+
+				if (!this->m_Helper.read(file).is_parsed())
+				{
+					this->on_failure(
+						"Failed to read or parse mes file.",
+						file
+					);
+					continue;
+				}
+			}
+			catch (const std::exception& err)
 			{
-				this->on_failure(
-					"Failed to read or parse mes file.",
-					file
-				);
+				this->on_failure(err.what(), file);
 				continue;
 			}
 
