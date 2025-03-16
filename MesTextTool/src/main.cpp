@@ -13,7 +13,7 @@ auto main(int argc, char** args) -> int
 	
 	console::make(_tool_name_, false);
 
-	double time = utils::time_counter<double>([&](void) -> void  
+	auto time = utils::time_counter<double>([&](void) -> void  
 	{
 
 		try {
