@@ -10,12 +10,9 @@ add_executable(MesTextTool ${SOURCES})
 include_directories(${SOURCE_DIR})
 
 file(GLOB HEADER_DIR ALL_FILES_AND_DIRS 
-    "${SOURCE_DIR}/*"
+    "${SOURCE_DIR}/*" 
     "${SOURCE_DIR}/*/*"
 )
 list(FILTER HEADER_DIR EXCLUDE REGEX ".*\\..*")
-foreach(H_DIR ${HEADER_DIR})
-    include_directories(${H_DIR})
-endforeach()
-
+target_include_directories(MesTextTool PUBLIC ${HEADER_DIR})
 set_target_properties(MesTextTool PROPERTIES LINK_FLAGS "/MANIFEST:NO")
