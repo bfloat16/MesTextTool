@@ -178,11 +178,12 @@ namespace utils::xmem {
 	template<class elem_t>
 	inline auto buffer<elem_t>::check(const size_t length) -> buffer&
 	{
-		size_t n_size{ this->m_Buffer.size() };
-		size_t target{ this->m_Count + length };
-		while (n_size < target) { n_size += 1024; };
-		if (n_size != this->m_Buffer.size()) {
-			this->m_Buffer.resize(n_size);
+
+		size_t count{ this->m_Count + length };
+		if (count > this->m_Buffer.size())
+		{
+			size_t size{ (count + 1023) & ~1023 };
+			this->m_Buffer.resize(size);
 		}
 		return *this;
 	}
