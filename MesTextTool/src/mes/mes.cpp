@@ -165,7 +165,7 @@ namespace mes {
 			{
 				token.length = 0x09;
 			}
-			else 
+			else
 			{
 				throw std::exception
 				{ 
