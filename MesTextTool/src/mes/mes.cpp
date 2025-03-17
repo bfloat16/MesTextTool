@@ -365,7 +365,7 @@ namespace mes {
 				if (block_count < blocks.size) 
 				{
 					auto count { static_cast<int32_t>(buffer.count()) };
-					auto offset{ count - asmbin.offset };
+					auto offset{ count - asmbin.offset + token.length };
 					auto&& block = blocks.data[block_count];
 					block = (block & (0xFF << 0x18)) | offset;
 					block_count++;
