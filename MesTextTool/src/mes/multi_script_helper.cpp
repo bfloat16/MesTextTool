@@ -192,6 +192,8 @@ namespace mes {
 		if (buffer.starts_with("@::"))
 		{
 			buffer.remove("@::", 0, 1);
+			buffer.replace("\\n", "\n");
+			buffer.convert_encoding(CP_UTF8, this->m_Config.UseCodePage);
 		}
 		else if ((this->m_Config.MaxLength != -1 || this->m_Config.MinLength != -1)
 			&& this->m_Config.MaxLength >= this->m_Config.MinLength)
