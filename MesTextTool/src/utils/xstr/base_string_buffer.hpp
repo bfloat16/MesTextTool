@@ -552,7 +552,7 @@ namespace utils::xstr {
 					elem_t* last{ data + pos };
 					size_t  count{ static_cast<size_t>(last - first) };
 
-					std::string_view substr{ first,  count };
+					view_t substr{ first,  count };
 					if (!substr.empty())
 					{
 						this->write(substr);
@@ -573,7 +573,7 @@ namespace utils::xstr {
 					elem_t* last{ data + end_pos };
 					size_t  count{ static_cast<size_t>(last - first) };
 
-					std::string_view substr{ first,  count };
+					view_t substr{ first,  count };
 					if (!substr.empty())
 					{
 						auto size{ substr.size() };
@@ -605,26 +605,22 @@ namespace utils::xstr {
 			elem_t* data{ this->m_Buffer.data() };
 			size_t diffs{ o_length - n_length };
 
-			size_t prev{ 0 };
-			size_t count{ 0 };
-			for (const size_t& pos : finds)
+			for (size_t i = 0, count{ 0 }, size{ finds.size() }; i < size; i++)
 			{
-				if (pos != prev)
+				size_t cur{ finds[i] };
+				auto find { reinterpret_cast<elem_t*>(data + cur - count) };
+				std::copy(n_string.begin(), n_string.end(), find);
+
+				auto str{ reinterpret_cast<elem_t*>(find + o_length + count) };
+				auto len
 				{
-					auto first{ data + prev + o_length };
-					auto last{ data + pos };
-					auto size{ static_cast<size_t>(last - first) };
-					std::string_view substr{ first,  size };
-					if (substr.empty())
-					{
-						auto dest{ (data + prev) - count + n_length };
-						std::copy(substr.begin(), substr.end(), dest);
-					}
-					count += diffs;
-				}
-				auto dest{ (data + pos) - count };
-				std::copy(n_string.begin(), n_string.end(), dest);
-				prev = pos;
+					i + 1 != size ?
+					size_t{ finds[i + 1] - (cur + o_length) } :
+					size_t{ this->m_CharCount - ((cur - count) + o_length + count) }
+				};
+				auto substr = view_t{ str, len };
+				std::copy(substr.begin(), substr.end(), find + n_length);
+				count = { count + diffs };
 			}
 			this->m_CharCount -= diffs * finds.size();
 		}
