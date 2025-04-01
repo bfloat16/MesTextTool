@@ -337,14 +337,13 @@ namespace mes {
 					{
 						return false;
 					}
-					
 					std::string str{ text->string };
 					for (char& chr : str)
 					{
 						chr -= 0x20; // 加密字符串
 					}
-					buffer.write(token.value).write(str).write('\0');
 					
+					buffer.write(token.value).write(str).write('\0');
 					return true;
 
 				}(find_text(token.offset));
