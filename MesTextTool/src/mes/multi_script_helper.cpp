@@ -142,30 +142,30 @@ namespace mes {
 
 	auto multi_script_helper::text_formater::is_first_char_forbidden(wchar_t chr) -> bool
 	{
-		size_t find { std::wstring_view{ L"¡£¡¢£¿¡¯¡±£¬£¡¡«¡¿£»£º£©¡¹¡»" }.find(chr) };
+		size_t find { std::wstring_view{ L"ã€‚ã€ï¼Ÿâ€™â€ï¼Œï¼ï½žã€‘ï¼›ï¼šï¼‰ã€ã€" }.find(chr) };
 		return find != std::wstring_view::npos;
 	}
 
 	auto multi_script_helper::text_formater::is_last_char_forbidden(wchar_t chr) -> bool
 	{
-		size_t find { std::wstring_view{ L"£¨(¡¸¡º¡¾¡®¡°¡­" }.find(chr) };
+		size_t find { std::wstring_view{ L"ï¼ˆ(ã€Œã€Žã€â€˜â€œâ€¦" }.find(chr) };
 		return find != std::wstring_view::npos;
 	}
 
 	auto mes::multi_script_helper::text_formater::is_talking(wchar_t beg, wchar_t end) -> bool
 	{
 
-		if (beg == L'¡¸' && end == L'¡¹')
+		if (beg == L'ã€Œ' && end == L'ã€')
 		{
 			return true;
 		}
 
-		if (beg == L'¡º' && end == L'¡»') 
+		if (beg == L'ã€Ž' && end == L'ã€') 
 		{
 			return true;
 		}
 
-		if (beg == L'¡°' && end == L'¡°')
+		if (beg == L'â€œ' && end == L'â€œ')
 		{
 			return true;
 		}
@@ -185,9 +185,9 @@ namespace mes {
 			buffer.replace(key, value);
 		}
 
-		buffer.replace(u8"/", u8"£¯");
-		buffer.replace(u8"{", u8"£û");
-		buffer.replace(u8"}", u8"£ý");
+		buffer.replace(u8"/", u8"ï¼");
+		buffer.replace(u8"{", u8"ï½›");
+		buffer.replace(u8"}", u8"ï½");
 
 		if (buffer.starts_with("@::"))
 		{
@@ -196,7 +196,7 @@ namespace mes {
 		else if ((this->m_Config.MaxLength != -1 || this->m_Config.MinLength != -1)
 			&& this->m_Config.MaxLength >= this->m_Config.MinLength)
 		{
-			buffer.remove(u8"\\n¡¡").remove(u8"\\n");
+			buffer.remove(u8"\\nã€€").remove(u8"\\n");
 
 			auto&& wtext = buffer.wstring(CP_UTF8);
 
@@ -221,22 +221,22 @@ namespace mes {
 					{
 						if (!this->is_first_char_forbidden(wchar) && wchar != L' ')
 						{
-							n_text.write(is_talking ? L"\n¡¡" : L"\n");
+							n_text.write(is_talking ? L"\nã€€" : L"\n");
 							char_count = 0.0f;
 						}
 					}
 
-					if (wchar == L'£û')
+					if (wchar == L'ï½›')
 					{
 						auto finish = [&]() -> bool
 							{
-								size_t spt = wtext.find(L'£¯', index);
+								size_t spt = wtext.find(L'ï¼', index);
 								if (std::wstring::npos == spt)
 								{
 									return false;
 								}
 
-								size_t end = wtext.find(L'£ý', spt);
+								size_t end = wtext.find(L'ï½', spt);
 								if (std::wstring::npos == end)
 								{
 									return false;
@@ -254,7 +254,7 @@ namespace mes {
 									char_count = char_count + length;
 									if (char_count >= this->m_Config.MaxLength)
 									{
-										n_text.write(is_talking ? L"\n¡¡" : L"\n");
+										n_text.write(is_talking ? L"\nã€€" : L"\n");
 										char_count = length;
 									}
 								}
@@ -298,7 +298,7 @@ namespace mes {
 								char_count = char_count + length;
 								if (char_count >= this->m_Config.MaxLength)
 								{
-									n_text.write(is_talking ? L"\n¡¡" : L"\n");
+									n_text.write(is_talking ? L"\nã€€" : L"\n");
 									char_count = length;
 								}
 							}
@@ -320,7 +320,7 @@ namespace mes {
 					if (char_count >= static_cast<float>(this->m_Config.MinLength)) {
 						if (this->is_last_char_forbidden(wchar))
 						{
-							n_text.write(is_talking ? L"\n¡¡" : L"\n");
+							n_text.write(is_talking ? L"\nã€€" : L"\n");
 							char_count = 1.0f;
 						}
 					}
@@ -345,7 +345,6 @@ namespace mes {
 		{
 			buffer.replace(key, value);
 		}
-
 		text = buffer.string();
 	}
 
@@ -394,7 +393,7 @@ namespace mes {
 				continue;
 			}
 
-			size_t pos = buffer.rfind(reinterpret_cast<const char*>(u8"¡ò¡ï"));
+			size_t pos = buffer.rfind(reinterpret_cast<const char*>(u8"â—Žâ˜…"));
 			if (pos == std::string_view::npos) 
 			{
 				continue;
@@ -510,7 +509,7 @@ namespace mes {
 			throw std::exception
 			{
 				"[multi_script_helper::import_all_text] "
-				"Mes path is empty£¡Please check."
+				"Mes path is emptyï¼Please check."
 			};
 		}
 
@@ -742,8 +741,8 @@ namespace mes {
 				buffer.write_as_format("#0x%X\n", text.offset);
 				line.reset().write(text.string).replace("\n", "\\n");
 				line.convert_to_utf8(this->m_IptCodePage);
-				buffer.write_as_format(u8"¡ï¡ò  %03d  ¡ò¡ï//%s\n", i + 1, line.data());
-				buffer.write_as_format(u8"¡ï¡ò  %03d  ¡ò¡ï%s\n\n", i + 1, line.data());
+				buffer.write_as_format(u8"â˜…â—Ž  %03d  â—Žâ˜…//%s\n", i + 1, line.data());
+				buffer.write_as_format(u8"â˜…â—Ž  %03d  â—Žâ˜…%s\n\n", i + 1, line.data());
 			}
 			opt_file.write(buffer.data(), 1, buffer.count());
 			opt_file.close();
