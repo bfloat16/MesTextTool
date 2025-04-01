@@ -1,4 +1,4 @@
-# MesTextTool，一个用于替换Mes脚本内文本的工具。
+# MesTextTool，一个用于替换Mes脚本内文本的工具（马戏团引擎）。
 ## 0x0 输入参数
 ```log
 # -LOG or -log 输出日志（可选）
