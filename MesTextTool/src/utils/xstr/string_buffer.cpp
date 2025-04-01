@@ -20,9 +20,9 @@ namespace utils::xstr {
 		if (size_t(length) > this->m_CharCount)
 		{
 			this->check(length - this->m_CharCount);
-			this->m_CharCount = length;
 		}
 		::WideCharToMultiByte(n_cdpg, 0, w_str.c_str(), -1, this->m_Buffer.data(), this->m_Buffer.size(), 0, 0);
+		this->m_CharCount = length;
 		return *this;
 	}
 
