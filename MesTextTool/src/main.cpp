@@ -74,7 +74,7 @@ auto main(int argc, char** args) -> int
 			{
 				console::writeline("[PROCESSING]...");
 			}
-
+			
 			mes::multi_script_helper helper{ input_path, work_path, input_info, input_cdpg };
 			helper.run(
 				// on success callback
