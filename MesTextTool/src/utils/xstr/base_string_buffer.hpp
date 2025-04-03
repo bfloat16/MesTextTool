@@ -577,15 +577,15 @@ namespace utils::xstr {
 					if (!substr.empty())
 					{
 						auto size{ substr.size() };
-						cur_pos -= size;
 						end_pos -= size;
-						elem_t* dest{ data + cur_pos };
+						cur_pos -= size;
+						elem_t* dest{ data + cur_pos + 1 };
 						std::copy(substr.begin(), substr.end(), dest);
 					}
 
 					end_pos -= o_length;
 					cur_pos -= n_length;
-					elem_t* dest{ data + cur_pos };
+					elem_t* dest{ data + cur_pos + 1 };
 					std::copy(n_string.begin(), n_string.end(), dest);
 				}
 				this->m_CharCount = n_count;
