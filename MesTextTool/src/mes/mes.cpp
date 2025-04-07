@@ -269,7 +269,7 @@ namespace mes {
 
 	auto script_helper::fetch_scene_text(bool absolute_file_offset) const -> std::vector<script_helper::text> 
 	{
-		std::vector<text> result{};
+		std::vector<script_helper::text> result{};
 		const auto&& asmbin = this->m_MesView.asmbin();
 		const script_info* info = this->m_MesView.info();
 		int32_t bese = absolute_file_offset ? asmbin.offset : 0;
