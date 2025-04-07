@@ -13,12 +13,12 @@ namespace mes {
 		};
 		const char name[10];
 		uint16_t version;
-		section	 uint8x2;
-		section uint8str;
-		section	  string;
-		section   encstr;
-		section uint16x4;
-		uint8_t optunenc;
+		section	 uint8x2; // [op: byte] [arg1: uint8] [arg2: uint8]
+		section uint8str; // [op: byte] [arg1: uint8] [arg2: string]
+		section	  string; // [op: byte] [arg1: string]
+		section   encstr; // [op: byte] [arg1: encstr]
+		section uint16x4; // [op: byte] [arg1: uint16] [arg2: uint16] [arg3: uint16] [arg4: uint16]
+		uint8_t optunenc; // the opcode for unencrypted strings in scene text
 		
 		static const script_info infos[];
 		static auto query(std::string_view name) -> const script_info*;
