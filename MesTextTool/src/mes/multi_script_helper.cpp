@@ -483,19 +483,29 @@ namespace mes {
 		return *this;
 	}
 
-	auto multi_script_helper::run(success_call onSuccess, failure_call onFailure) -> multi_script_helper&
+	auto multi_script_helper::run(success_call onSuccess, failure_call onFailure, bool _noexcept) -> multi_script_helper&
 	{
 
 		this->m_OnSuccess = onSuccess;
 		this->m_OnFailure = onFailure;
 
-		if (!this->m_ConfigFile.empty())
+		try 
 		{
-			this->import_all_text();
+			if (!this->m_ConfigFile.empty())
+			{
+				this->import_all_text();
+			}
+			else
+			{
+				this->export_all_text();
+			}
 		}
-		else
+		catch (const std::exception& err)
 		{
-			this->export_all_text();
+			if (!_noexcept)
+			{
+				throw err;
+			}
 		}
 
 		return *this;
@@ -530,6 +540,7 @@ namespace mes {
 			CONFIG.InputPath.append("\\");
 		}
 
+		size_t success_count{};
 		std::string opt_path{};
 		text_formater formater{ CONFIG };
 		for (const std::string& file : this->m_FileList)
@@ -637,6 +648,7 @@ namespace mes {
 				auto raw = this->m_Helper.get_view().raw();
 				opt_file.write(raw.data, 1, raw.size);
 				this->on_success(file, opt_file_path);
+				success_count++;
 			}
 			else
 			{
@@ -644,10 +656,20 @@ namespace mes {
 			}
 		}
 
+		if (success_count == 0)
+		{
+			throw std::exception
+			{
+				"[multi_script_helper::import_all_text] "
+				"failed to all file!"
+			};
+		}
+
 	}
 
 	auto multi_script_helper::export_all_text() -> void
 	{
+		size_t success_count{};
 		std::string opt_path{};
 		utils::string::buffer buffer{}, line{};
 		for (const std::string& file : this->m_FileList)
@@ -750,9 +772,21 @@ namespace mes {
 			opt_file.close();
 
 			this->on_success(file, opt_file_path);
+			success_count++;
 		}
 
-		this->make_config_file(opt_path);
+		if (success_count > 0)
+		{
+			this->make_config_file(opt_path);
+		}
+		else 
+		{
+			throw std::exception
+			{
+				"[multi_script_helper::export_all_text] "
+				"failed to all file!"
+			};
+		}
 	}
 
 	auto multi_script_helper::make_config_file(const std::string& opt_dir) -> void
