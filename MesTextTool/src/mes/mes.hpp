@@ -157,9 +157,9 @@ namespace mes {
 
 		multi_script_helper(std::string_view ipt_dirOrFile, std::string_view opt_dir, const script_info* info = {}, uint32_t ipt_cdpg = { defualt_code_page });
 		
-		auto get_err_msg() const -> const std::string&;
-		auto set_ipt_cdpg(int32_t cdpg) -> multi_script_helper&;
-		auto run(success_call onSuccess = {}, failure_call onFailure = {}) -> multi_script_helper&;
+		auto get_err_msg() const  -> const std::string&;
+		auto set_ipt_cdpg(int32_t cdpg)  -> multi_script_helper&;
+		auto run(success_call onSuccess = {}, failure_call onFailure = {}, bool _noexcept = {false}) -> multi_script_helper&;
 	};
 
 }
