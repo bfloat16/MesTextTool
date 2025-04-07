@@ -44,7 +44,7 @@ D:\YourGames\Name\Advdata\MES
 ```
 MesTextTool-cp936.exe ; cp936 -> GBK编码
 ```
-程序默认是自动选择mes版本，如需手动指定可以将exe重命名加上`-版本简称`，例如：
+程序默认是自动选择mes版本，但不一定全部都适用，这时候就需要手动指定游戏版本了，将exe重命名加上`-版本简称`，例如：
 ```
 MesTextTool-cp936-dc4.exe ; 以GBK编码打开DC4版本的Mes文件
 ```
