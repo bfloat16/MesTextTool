@@ -527,11 +527,11 @@ namespace utils::xstr {
 				}
 				current = pos + o_length;
 			}
-		}
 
-		if (finds.empty())
-		{
-			return;
+			if (finds.empty())
+			{
+				return;
+			}
 		}
 
 		if (n_length > o_length)
@@ -567,10 +567,10 @@ namespace utils::xstr {
 				size_t cur_pos{ n_count - 1 };
 				size_t end_pos{ this->m_CharCount };
 				elem_t* data{ this->m_Buffer.data() };
-				for (const size_t& pos : std::ranges::reverse_view(finds)) {
-
+				for (const size_t& pos : std::ranges::reverse_view(finds))
+				{
 					elem_t* first{ data + pos + o_length };
-					elem_t* last{ data + end_pos };
+					elem_t* last { data + end_pos };
 					size_t  count{ static_cast<size_t>(last - first) };
 
 					view_t substr{ first,  count };
