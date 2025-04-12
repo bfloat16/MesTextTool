@@ -332,10 +332,13 @@ namespace mes {
 
 		auto update_block = [&](int old_block, int new_block) -> void
 		{
-			if (is_new_mes && old_block < blocks.size)
+			if (is_new_mes)
 			{
-				auto&& block{ blocks.data[old_block] };
-				block = (block & (0xFF << 0x18)) | new_block;
+				if (old_block < blocks.size) 
+				{
+					auto&& block{ blocks.data[old_block] };
+					block = (block & (0xFF << 0x18)) | new_block;
+				}
 			}
 			else 
 			{
