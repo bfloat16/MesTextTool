@@ -135,21 +135,21 @@ namespace mes {
 	{
 		for (auto& [key, value] : config.After)
 		{
-			key   = utils::mstr_cvt(key, CP_UTF8, this->m_Config.UseCodePage);
-			value = utils::mstr_cvt(value, CP_UTF8, this->m_Config.UseCodePage);
+			key   = { utils::mstr_cvt(key,   CP_UTF8, this->m_Config.UseCodePage) };
+			value = { utils::mstr_cvt(value, CP_UTF8, this->m_Config.UseCodePage) };
 		}
 	}
 
 	auto multi_script_helper::text_formater::is_first_char_forbidden(wchar_t chr) -> bool
 	{
-		size_t find { std::wstring_view{ L"。、？’”，！～】；：）」』" }.find(chr) };
-		return find != std::wstring_view::npos;
+		size_t find { std::wstring_view{ L"。、？’”，！～】；：）」』 　" }.find(chr) };
+		return { find != std::wstring_view::npos };
 	}
 
 	auto multi_script_helper::text_formater::is_last_char_forbidden(wchar_t chr) -> bool
 	{
 		size_t find { std::wstring_view{ L"（(「『【‘“…" }.find(chr) };
-		return find != std::wstring_view::npos;
+		return { find != std::wstring_view::npos };
 	}
 
 	auto mes::multi_script_helper::text_formater::is_talking(wchar_t beg, wchar_t end) -> bool
@@ -157,25 +157,25 @@ namespace mes {
 
 		if (beg == L'「' && end == L'」')
 		{
-			return true;
+			return { true };
 		}
 
 		if (beg == L'『' && end == L'』') 
 		{
-			return true;
+			return { true };
 		}
 
 		if (beg == L'“' && end == L'“')
 		{
-			return true;
+			return { true };
 		}
 
-		return false;
+		return { false };
 	}
 
 	auto multi_script_helper::text_formater::is_half_width(wchar_t wchar) -> bool
 	{
-		return static_cast<bool>(wchar >= 0x0000 && wchar <= 0x007F);
+		return { static_cast<bool>(wchar >= 0x0000 && wchar <= 0x007F) };
 	}
 
 	auto multi_script_helper::text_formater::format(std::string& text) -> void
@@ -221,10 +221,10 @@ namespace mes {
 
 					if (char_count >= static_cast<float>(this->m_Config.MinLength))
 					{
-						if (!this->is_first_char_forbidden(wchar) && wchar != L' ')
+						if (!this->is_first_char_forbidden(wchar))
 						{
-							n_text.write(is_talking ? L"\n　" : L"\n");
-							char_count = 0.0f;
+							n_text.write({ is_talking ? L"\n　" : L"\n" });
+							char_count = { is_talking ? 1.0f : 0.0f     };
 						}
 					}
 
