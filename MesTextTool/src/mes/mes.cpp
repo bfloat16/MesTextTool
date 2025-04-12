@@ -311,10 +311,11 @@ namespace mes {
 			return false;
 		}
 
-		const auto&& asmbin = this->m_MesView.asmbin();
-		const auto&& blocks = this->m_MesView.blocks();
-		const script_info* info = this->m_MesView.info();
-		int32_t bese = absolute_file_offset ? asmbin.offset : 0;
+		const auto&& asmbin{ this->m_MesView.asmbin() };
+		const auto&& blocks{ this->m_MesView.blocks() };
+		const script_info* info{ this->m_MesView.info() };
+		const bool is_new_mes  { this->m_MesView.is_new_mes() };
+		int32_t bese{ absolute_file_offset ? asmbin.offset : 0 };
 
 		auto find_text = [&](int32_t offset) -> const script_helper::text*
 		{
@@ -329,12 +330,32 @@ namespace mes {
 			return nullptr;
 		};
 
+		auto update_block = [&](int old_block, int new_block) -> void
+		{
+			if (is_new_mes && old_block < blocks.size)
+			{
+				auto&& block{ blocks.data[old_block] };
+				block = (block & (0xFF << 0x18)) | new_block;
+			}
+			else 
+			{
+				for (size_t i = 0; i < blocks.size; i++)
+				{
+					auto&& block{ blocks.data[i] };
+					if (old_block == block)
+					{
+						block = new_block;
+						break;
+					}
+				}
+			}
+		};
+
 		utils::xmem::buffer<uint8_t> buffer{};
 		buffer.resize(this->m_Buffer.size());
 		buffer.recount(asmbin.offset);
 
 		auto block_count = int32_t{ 0 };
-		auto is_new_mes  = bool { this->m_MesView.is_new_mes() };
 		for (const auto& token : this->m_MesView.tokens())
 		{
 			if (info->encstr.its(token.value))
@@ -353,57 +374,42 @@ namespace mes {
 
 					if (!is_new_mes)
 					{
-						auto offset{ static_cast<int32_t>(buffer.count()) };
-						for (size_t i = 0; i < blocks.size; i++)
-						{
-							auto& block = blocks.data[i];
-							if (token.offset == block)
-							{
-								block = offset;
-								break;
-							}
-						}
+						auto count { static_cast<int32_t>(buffer.count()) };
+						auto newofs{ count - asmbin.offset + 2 };
+						auto oldofs{ token.offset + 2 };
+						update_block(oldofs, newofs);
+						block_count++;
 					}
-
 					buffer.write(token.value).write(str).write('\0');
 					return true;
 				}(find_text(token.offset));
-
+				
 				if (finish) {  continue; }
 			}
-			else if (token.value != NULL && info->optunenc == token.value) 
+			
+			if (token.value != NULL && info->optunenc == token.value) 
 			{
 				auto&& text = find_text(token.offset);
 				if (text != nullptr)
 				{
 					if (!is_new_mes)
 					{
-						auto offset{ static_cast<int32_t>(buffer.count()) };
-						for (size_t i = 0; i < blocks.size; i++)
-						{
-							auto& block = blocks.data[i];
-							if (token.offset == block)
-							{
-								block = offset;
-								break;
-							}
-						}
+						auto count { static_cast<int32_t>(buffer.count()) };
+						auto newofs{ count - asmbin.offset + 2 };
+						auto oldofs{ token.offset + 2 };
+						update_block(oldofs, newofs);
+						block_count++;
 					}
 					buffer.write(token.value).write(text->string).write('\0');
 					continue;
 				}
 			}
-			
+
 			if (is_new_mes && (token.value == 0x03 || token.value == 0x04 ))
 			{
-				if (block_count < blocks.size) 
-				{
-					auto count { static_cast<int32_t>(buffer.count()) };
-					auto offset{ count - asmbin.offset + token.length };
-					auto&& block = blocks.data[block_count];
-					block = (block & (0xFF << 0x18)) | offset;
-					block_count++;
-				}
+				auto count{ static_cast<int32_t>(buffer.count()) };
+				auto offset{ count - asmbin.offset + token.length };
+				update_block(block_count++, offset);
 			}
 
 			buffer.write(asmbin.data + token.offset, token.length);
