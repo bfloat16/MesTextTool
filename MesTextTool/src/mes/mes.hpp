@@ -42,7 +42,7 @@ namespace mes {
 		auto blocks() const -> view<int32_t>;
 		auto tokens() const -> const std::vector<token>&;
 		auto version() const -> uint16_t;
-	
+		auto is_new_mes() const -> bool;
 	private:
 		const script_info* m_Info{};
 		std::vector<token> m_Tokens{};
@@ -50,7 +50,7 @@ namespace mes {
 		view<uint8_t> m_Asmbin{};
 		view<uint8_t> m_Raw{};
 		uint16_t m_Version{};
-
+		bool m_IsNewMesVer{};
 		inline auto token_parse() -> void;
 	};
 

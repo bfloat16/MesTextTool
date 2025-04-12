@@ -99,6 +99,7 @@ namespace mes {
 					.offset = 0x08
 				};
 			}
+			this->m_IsNewMesVer = { true };
 		}
 		else 
 		{
@@ -123,6 +124,7 @@ namespace mes {
 					.offset = 0x04
 				};
 			}
+			this->m_IsNewMesVer = { false };
 		}
 		this->token_parse();
 	}
@@ -205,6 +207,11 @@ namespace mes {
 	auto script_view::version() const -> uint16_t 
 	{
 		return this->m_Version;
+	}
+
+	auto script_view::is_new_mes() const -> bool
+	{
+		return { this->m_IsNewMesVer };
 	}
 
 	script_helper::script_helper() {}
@@ -326,7 +333,8 @@ namespace mes {
 		buffer.resize(this->m_Buffer.size());
 		buffer.recount(asmbin.offset);
 
-		int32_t block_count{ 0 };
+		auto block_count = int32_t{ 0 };
+		auto is_new_mes  = bool { this->m_MesView.is_new_mes() };
 		for (const auto& token : this->m_MesView.tokens())
 		{
 			if (info->encstr.its(token.value))
@@ -342,24 +350,51 @@ namespace mes {
 					{
 						chr -= 0x20; // 加密字符串
 					}
-					
+
+					if (!is_new_mes)
+					{
+						auto offset{ static_cast<int32_t>(buffer.count()) };
+						for (size_t i = 0; i < blocks.size; i++)
+						{
+							auto& block = blocks.data[i];
+							if (token.offset == block)
+							{
+								block = offset;
+								break;
+							}
+						}
+					}
+
 					buffer.write(token.value).write(str).write('\0');
 					return true;
-
 				}(find_text(token.offset));
 
-				if (finish) { continue; }
+				if (finish) {  continue; }
 			}
 			else if (token.value != NULL && info->optunenc == token.value) 
 			{
 				auto&& text = find_text(token.offset);
 				if (text != nullptr)
 				{
+					if (!is_new_mes)
+					{
+						auto offset{ static_cast<int32_t>(buffer.count()) };
+						for (size_t i = 0; i < blocks.size; i++)
+						{
+							auto& block = blocks.data[i];
+							if (token.offset == block)
+							{
+								block = offset;
+								break;
+							}
+						}
+					}
 					buffer.write(token.value).write(text->string).write('\0');
 					continue;
 				}
 			}
-			else if (token.value == 0x03 || token.value == 0x04)
+			
+			if (is_new_mes && (token.value == 0x03 || token.value == 0x04 ))
 			{
 				if (block_count < blocks.size) 
 				{
