@@ -322,8 +322,8 @@ namespace mes {
 					if (char_count >= static_cast<float>(this->m_Config.MinLength)) {
 						if (this->is_last_char_forbidden(wchar))
 						{
-							n_text.write(is_talking ? L"\n　" : L"\n");
-							char_count = 1.0f;
+							n_text.write({ is_talking ? L"\n　" : L"\n" });
+							char_count = { is_talking ? 2.0f : 1.0f     };
 						}
 					}
 
