@@ -330,30 +330,6 @@ namespace mes {
 			return nullptr;
 		};
 
-		auto update_block = [&](int old_block, int new_block) -> void
-		{
-			if (is_new_mes)
-			{
-				if (old_block < blocks.size) 
-				{
-					auto&& block{ blocks.data[old_block] };
-					block = (block & (0xFF << 0x18)) | new_block;
-				}
-			}
-			else 
-			{
-				for (size_t i = 0; i < blocks.size; i++)
-				{
-					auto&& block{ blocks.data[i] };
-					if (old_block == block)
-					{
-						block = new_block;
-						break;
-					}
-				}
-			}
-		};
-
 		utils::xmem::buffer<uint8_t> buffer{};
 		buffer.resize(this->m_Buffer.size());
 		buffer.recount(asmbin.offset);
@@ -361,6 +337,17 @@ namespace mes {
 		auto block_count = int32_t{ 0 };
 		for (const auto& token : this->m_MesView.tokens())
 		{
+			if (!is_new_mes && block_count < blocks.size)
+			{
+				if (token.offset + 2 == blocks.data[block_count])
+				{
+					auto count { static_cast<int32_t>(buffer.count()) };
+					auto offset{ count - asmbin.offset + 2 };
+					auto&& block{ blocks.data[block_count++] };
+					block = { (block & (0xFF << 0x18)) | offset };
+				}
+			}
+
 			if (info->encstr.its(token.value))
 			{
 				auto finish = [&](const script_helper::text* text) -> bool
@@ -374,15 +361,6 @@ namespace mes {
 					{
 						chr -= 0x20; // 加密字符串
 					}
-
-					if (!is_new_mes)
-					{
-						auto count { static_cast<int32_t>(buffer.count()) };
-						auto newofs{ count - asmbin.offset + 2 };
-						auto oldofs{ token.offset + 2 };
-						update_block(oldofs, newofs);
-						block_count++;
-					}
 					buffer.write(token.value).write(str).write('\0');
 					return true;
 				}(find_text(token.offset));
@@ -395,14 +373,6 @@ namespace mes {
 				auto&& text = find_text(token.offset);
 				if (text != nullptr)
 				{
-					if (!is_new_mes)
-					{
-						auto count { static_cast<int32_t>(buffer.count()) };
-						auto newofs{ count - asmbin.offset + 2 };
-						auto oldofs{ token.offset + 2 };
-						update_block(oldofs, newofs);
-						block_count++;
-					}
 					buffer.write(token.value).write(text->string).write('\0');
 					continue;
 				}
@@ -410,14 +380,18 @@ namespace mes {
 
 			if (is_new_mes && (token.value == 0x03 || token.value == 0x04 ))
 			{
-				auto count{ static_cast<int32_t>(buffer.count()) };
-				auto offset{ count - asmbin.offset + token.length };
-				update_block(block_count++, offset);
+				if (block_count < blocks.size)
+				{
+					auto count  { static_cast<int32_t>(buffer.count()) };
+					auto offset { count - asmbin.offset + token.length };
+					auto&& block{ blocks.data[block_count++] };
+					block = { (block & (0xFF << 0x18)) | offset };
+				}
 			}
 
 			buffer.write(asmbin.data + token.offset, token.length);
 		}
-
+		
 		buffer.write(0, this->m_MesView.raw().data, asmbin.offset);
 		
 		std::span raw { buffer.data(), buffer.count() };
