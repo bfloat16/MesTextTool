@@ -5,8 +5,10 @@
 
 namespace utils {
 
-	auto mstr_cvt(std::string_view str, uint32_t o_cdpg, uint32_t n_cdpg) -> std::string {
+	auto mstr_cvt(std::string_view str, uint32_t o_cdpg, uint32_t n_cdpg) -> std::string
+	{
 		auto&& wstr   = std::wstring(::MultiByteToWideChar(o_cdpg, 0,  str.data(), -1, 0, 0) - 1, 0);
+		::MultiByteToWideChar(o_cdpg, 0, str.data(), -1, wstr.data(), wstr.size());
 		auto&& result = std::string (::WideCharToMultiByte(n_cdpg, 0, wstr.data(), -1, 0, 0, 0, 0) - 1, 0);
 		::WideCharToMultiByte(n_cdpg, 0, wstr.data(), -1, const_cast<char*>(result.c_str()), result.size(), 0, 0);
 		return result;
