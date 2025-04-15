@@ -33,7 +33,7 @@ auto main(int argc, char** args) -> int
 			else if (argc == 3)
 			{
 				std::string_view arg{ args[1] };
-				enable_log =  "-log" == arg || "-LOG" == arg;
+				enable_log = { "-log" == arg || "-LOG" == arg };
 			}
 
 			auto input_info = static_cast<const mes::script_info*>(nullptr);
