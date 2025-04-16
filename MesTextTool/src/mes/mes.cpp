@@ -337,14 +337,16 @@ namespace mes {
 		auto block_count = int32_t{ 0 };
 		for (const auto& token : this->m_MesView.tokens())
 		{
+
 			if (!is_new_mes && block_count < blocks.size)
 			{
 				if (token.offset + 2 == blocks.data[block_count])
 				{
 					auto count  { static_cast<int32_t>(buffer.count()) };
 					auto offset { count - asmbin.offset + 2 };
-					auto&& block{ blocks.data[block_count++] };
+					auto&& block{ blocks.data[block_count] };
 					block = { static_cast<int32_t>(offset) };
+					block_count++;
 				}
 			}
 
@@ -384,8 +386,9 @@ namespace mes {
 				{
 					auto count  { static_cast<int32_t>(buffer.count()) };
 					auto offset { count - asmbin.offset + token.length };
-					auto&& block{ blocks.data[block_count++] };
+					auto&& block{ blocks.data[block_count]      };
 					block = { (block & (0xFF << 0x18)) | offset };
+					block_count++;
 				}
 			}
 
