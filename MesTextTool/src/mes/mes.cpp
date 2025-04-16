@@ -341,10 +341,10 @@ namespace mes {
 			{
 				if (token.offset + 2 == blocks.data[block_count])
 				{
-					auto count { static_cast<int32_t>(buffer.count()) };
-					auto offset{ count - asmbin.offset + 2 };
+					auto count  { static_cast<int32_t>(buffer.count()) };
+					auto offset { count - asmbin.offset + 2 };
 					auto&& block{ blocks.data[block_count++] };
-					block = { (block & (0xFF << 0x18)) | offset };
+					block = { static_cast<int32_t>(offset) };
 				}
 			}
 
