@@ -86,7 +86,7 @@ namespace mes {
 	public:
 		struct config {
 
-			using replaces = std::vector<std::pair<std::string, std::string>>;
+			using replaces = std::vector<std::pair<std::wstring, std::wstring>>;
 
 			inline static constexpr char path[] = "#InputPath";
 			inline static constexpr char cdpg[] = "#UseCodePage";

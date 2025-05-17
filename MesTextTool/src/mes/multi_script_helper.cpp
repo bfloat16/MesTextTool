@@ -115,12 +115,18 @@ namespace mes {
 					continue;
 				}
 				std::string key = buffer.substr(1, offset - 1);
+
 				if (key.empty()) { continue; }
 				size_t v_count = buffer.count() - (offset + 4);
 				std::string value = buffer.substr(offset + 3, v_count);
-				auto pair = std::make_pair(key, value);
+				auto pair = std::make_pair
+				(
+					utils::to_u16str(key, CP_UTF8), 
+					utils::to_u16str(value, CP_UTF8)
+				);
 				if (flag == 5)
 				{
+
 					result.Before.push_back(pair);
 				}
 				else 
@@ -133,11 +139,6 @@ namespace mes {
 
 	multi_script_helper::text_formater::text_formater(config& config) : m_Config(config)
 	{
-		for (auto& [key, value] : config.After)
-		{
-			key   = { utils::mstr_cvt(key,   CP_UTF8, this->m_Config.UseCodePage) };
-			value = { utils::mstr_cvt(value, CP_UTF8, this->m_Config.UseCodePage) };
-		}
 	}
 
 	auto multi_script_helper::text_formater::is_first_char_forbidden(wchar_t chr) -> bool
@@ -180,36 +181,42 @@ namespace mes {
 
 	auto multi_script_helper::text_formater::format(std::string& text) -> void
 	{
-		utils::string::buffer buffer{ text };
+		auto buffer{ utils::string::buffer{ text }.wstring_buffer(CP_UTF8) };
+
 		for (const auto& [key, value] : this->m_Config.Before) {
 			buffer.replace(key, value);
 		}
 
-		buffer.replace(u8"/", u8"／");
-		buffer.replace(u8"{", u8"｛");
-		buffer.replace(u8"}", u8"｝");
-
-		if (buffer.starts_with("@::"))
+		buffer.replace(L"/", L"／");
+		buffer.replace(L"{", L"｛");
+		buffer.replace(L"}", L"｝");
+		
+		bool need_enable_format { false };
+		if (buffer.starts_with(L"@::"))
 		{
-			buffer.remove("@::", 0, 1);
-			buffer.replace("\\n", "\n");
-			buffer.convert_encoding(CP_UTF8, this->m_Config.UseCodePage);
+			buffer.remove(L"@::", 0, 1);
+			buffer.replace(L"\\n", L"\n");
 		}
-		else if ((this->m_Config.MaxLength != -1 || this->m_Config.MinLength != -1)
-			&& this->m_Config.MaxLength >= this->m_Config.MinLength)
+		else 
 		{
-			buffer.remove(u8"\\n　").remove(u8"\\n");
+			need_enable_format = bool
+			{
+				(this->m_Config.MaxLength != -1 || this->m_Config.MinLength != -1) &&
+				this->m_Config.MaxLength >= this->m_Config.MinLength
+			};
+		}
+	    if (need_enable_format)
+		{
+			buffer.remove(L"\\n　").remove(L"\\n");
 
-			auto&& wtext = buffer.wstring(CP_UTF8);
-
-			auto first = wtext.begin();
-			auto last = wtext.end() - 1;
-
-			bool is_talking = this->is_talking(*first, *last);
+			auto wtext{ buffer.view() };
+			auto first{ wtext.begin() };
+			auto last { wtext.end() - 1 };
+			bool is_talking{ this->is_talking(*first, *last) };
 
 			size_t length = wtext.size();
 
-			if (length > size_t(this->m_Config.MinLength))
+			if (length >  static_cast<size_t>(this->m_Config.MinLength))
 			{
 
 				float char_count = 0.0f;
@@ -304,7 +311,7 @@ namespace mes {
 									char_count = length;
 								}
 							}
-
+							
 							n_text.write(text);
 							index += count;
 							continue;
@@ -331,24 +338,15 @@ namespace mes {
 					n_text.write(wchar);
 					index++;
 				}
-
-				buffer = n_text.string_buffer(this->m_Config.UseCodePage);
-			}
-			else
-			{
-				buffer.convert_encoding(CP_UTF8, this->m_Config.UseCodePage);
+				
+				buffer = std::move(n_text);
 			}
 		}
-		else 
-		{
-			buffer.convert_encoding(CP_UTF8, this->m_Config.UseCodePage);
-		}
-
 		for (const auto& [key, value] : this->m_Config.After) 
 		{
 			buffer.replace(key, value);
 		}
-		text = buffer.string();
+		text = buffer.string(this->m_Config.UseCodePage);
 	}
 
 	auto multi_script_helper::read_text(std::string_view path, std::vector<script_helper::text>& result) -> bool {
