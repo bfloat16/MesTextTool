@@ -50,6 +50,7 @@ MesTextTool-cp936-dc4.exe ; 以GBK编码打开DC4版本的Mes文件
 ```
 | 游戏| 简称 | 
 | :-----| :----: |
+|百花百狼/Hyakka Hyakurou|Nightshade|
 |てんぷれ！|tmpl|
 |fortissimo//Akkord:Bsusvier | ffexa |
 |fortissimo EXS//Akkord:nächsten Phase | ffexs | 
