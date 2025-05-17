@@ -37,9 +37,13 @@ namespace utils::xstr {
 			iterator(elem_t* ptr) : m_Ptr(ptr) {}
 			elem_t& operator* () const { return *m_Ptr; }
 			iterator& operator++() { ++m_Ptr; return *this; }
-			iterator& operator+=(size_t n) { return iterator(m_Ptr + n); }
+			iterator& operator--() { --m_Ptr; return *this; }
+			iterator  operator+=(size_t n) { m_Ptr += n; return *this; }
+			iterator  operator-=(size_t n) { m_Ptr -= n; return *this; }
 			iterator  operator++(int) { iterator tmp = *this; ++m_Ptr; return tmp; }
-			iterator  operator+ (size_t n) { m_Ptr += n; return *this; }
+			iterator  operator--(int) { iterator tmp = *this; --m_Ptr; return tmp; }
+			iterator& operator+(size_t n) { return iterator(m_Ptr + n); }
+			iterator& operator-(size_t n) { return iterator(m_Ptr - n); }
 			bool operator==(const iterator& other) const { return m_Ptr == other.m_Ptr; }
 			bool operator!=(const iterator& other) const { return m_Ptr != other.m_Ptr; }
 		};
