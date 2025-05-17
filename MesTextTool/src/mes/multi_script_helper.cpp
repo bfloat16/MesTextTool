@@ -142,13 +142,13 @@ namespace mes {
 
 	auto multi_script_helper::text_formater::is_first_char_forbidden(wchar_t chr) -> bool
 	{
-		size_t find { std::wstring_view{ L"。、？’”，！～】；：）」』 　" }.find(chr) };
+		size_t find { std::wstring_view{ L"。、？’”，！～】；：）」』… 　" }.find(chr) };
 		return { find != std::wstring_view::npos };
 	}
 
 	auto multi_script_helper::text_formater::is_last_char_forbidden(wchar_t chr) -> bool
 	{
-		size_t find { std::wstring_view{ L"（(「『【‘“…" }.find(chr) };
+		size_t find { std::wstring_view{ L"（(「『【‘“" }.find(chr) };
 		return { find != std::wstring_view::npos };
 	}
 

@@ -6,12 +6,14 @@
 
 namespace mes {
 
-	struct script_info {
-		struct section {
+	struct script_info 
+	{
+		struct section 
+		{
 			uint8_t beg{}, end{};
 			inline auto its(uint8_t key) const -> bool;
 		};
-		const char name[10];
+		const char name[15];
 		uint16_t version;
 		section	 uint8x2; // [op: byte] [arg1: uint8] [arg2: uint8]
 		section uint8str; // [op: byte] [arg1: uint8] [arg2: string]
@@ -19,6 +21,7 @@ namespace mes {
 		section   encstr; // [op: byte] [arg1: encstr]
 		section uint16x4; // [op: byte] [arg1: uint16] [arg2: uint16] [arg3: uint16] [arg4: uint16]
 		uint8_t optunenc; // the opcode for unencrypted strings in scene text
+		uint8_t deckey;
 		
 		static const script_info infos[];
 		static auto query(std::string_view name) -> const script_info*;
