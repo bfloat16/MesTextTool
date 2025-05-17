@@ -27,7 +27,7 @@ namespace utils::xstr {
 		auto wstring_buffer(uint32_t cdpg = 0) -> wstring_buffer;
 	};
 
-	class wstring_buffer : public base_xstring_buffer<string_buffer, wchar_t>
+	class wstring_buffer : public base_xstring_buffer<wstring_buffer, wchar_t>
 	{
 		friend string_buffer;
 	public:
