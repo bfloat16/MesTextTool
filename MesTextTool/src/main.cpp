@@ -109,10 +109,7 @@ auto main(int argc, char** args) -> int
 	
 	console::make(_tool_name_, false);
 	
-	auto time
-	{ 
-		utils::time_counter<double>([&]() { run(argc, args); })
-	};
+	auto time { utils::time_counter<double>([&]() { run(argc, args); }) };
 	console::fmt::write<console::cdpg::dDfault, console::txt::dark_yellow>
 	(
 		"MesTextTool: Ver %s.\n"
