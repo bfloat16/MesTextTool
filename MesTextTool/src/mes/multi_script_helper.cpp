@@ -126,7 +126,6 @@ namespace mes {
 				);
 				if (flag == 5)
 				{
-
 					result.Before.push_back(pair);
 				}
 				else 
@@ -181,8 +180,8 @@ namespace mes {
 
 	auto multi_script_helper::text_formater::format(std::string& text) -> void
 	{
-		auto buffer{ utils::string::buffer{ text }.wstring_buffer(CP_UTF8) };
-
+		utils::wstring::buffer buffer{ utils::to_u16str(text, CP_UTF8) };
+		
 		for (const auto& [key, value] : this->m_Config.Before) {
 			buffer.replace(key, value);
 		}
@@ -216,7 +215,7 @@ namespace mes {
 
 			size_t length = wtext.size();
 
-			if (length >  static_cast<size_t>(this->m_Config.MinLength))
+			if (length > static_cast<size_t>(this->m_Config.MinLength))
 			{
 
 				float char_count = 0.0f;
@@ -238,44 +237,44 @@ namespace mes {
 					if (wchar == L'｛')
 					{
 						auto finish = [&]() -> bool
+						{
+							size_t spt = wtext.find(L'／', index);
+							if (std::wstring::npos == spt)
 							{
-								size_t spt = wtext.find(L'／', index);
-								if (std::wstring::npos == spt)
+								return false;
+							}
+
+							size_t end = wtext.find(L'｝', spt);
+							if (std::wstring::npos == end)
+							{
+								return false;
+							}
+
+							size_t count = end - spt - 1;
+							std::wstring_view sub{ wtext.data() + spt + 1, count };
+							{
+								float length = 0.0f;
+								for (const wchar_t& chr : sub)
 								{
-									return false;
+									length += this->is_half_width(chr) ? 0.5f : 1.0f;
 								}
 
-								size_t end = wtext.find(L'｝', spt);
-								if (std::wstring::npos == end)
+								char_count = char_count + length;
+								if (char_count >= this->m_Config.MaxLength)
 								{
-									return false;
+									n_text.write(is_talking ? L"\n　" : L"\n");
+									char_count = length;
 								}
+							}
 
-								size_t count = end - spt - 1;
-								std::wstring_view sub{ wtext.data() + spt + 1, count };
-								{
-									float length = 0.0f;
-									for (const wchar_t& chr : sub)
-									{
-										length += this->is_half_width(chr) ? 0.5f : 1.0f;
-									}
+							auto&& first{ wtext.begin() + index };
+							auto&& last{ first + (end - index + 1) };
+							std::wstring_view text{ first,  last };
+							n_text.write(text);
 
-									char_count = char_count + length;
-									if (char_count >= this->m_Config.MaxLength)
-									{
-										n_text.write(is_talking ? L"\n　" : L"\n");
-										char_count = length;
-									}
-								}
-
-								auto&& first{ wtext.begin() + index };
-								auto&& last{ first + (end - index + 1) };
-								std::wstring_view text{ first,  last };
-								n_text.write(text);
-
-								index = end + 1;
-								return true;
-							}();
+							index = end + 1;
+							return true;
+						}();
 
 						if (finish) { continue; };
 					}
