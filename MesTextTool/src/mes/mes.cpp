@@ -306,12 +306,12 @@ namespace mes {
 	{
 		if (texts.empty())
 		{
-			return false;
+			return { false };
 		}
 
 		if (this->m_MesView.tokens().empty()) 
 		{
-			return false;
+			return { false };
 		}
 
 		const auto&& asmbin{ this->m_MesView.asmbin() };
@@ -327,10 +327,10 @@ namespace mes {
 				auto pos = text.offset - bese;
 				if (pos == offset)
 				{
-					return &text;
+					return { &text };
 				}
 			}
-			return nullptr;
+			return { nullptr };
 		};
 
 		utils::xmem::buffer<uint8_t> buffer{};
@@ -370,7 +370,7 @@ namespace mes {
 					return true;
 				}(find_text(token.offset));
 				
-				if (finish) {  continue; }
+				if (finish) { continue; }
 			}
 			
 			if (token.value != NULL && info->optunenc == token.value) 

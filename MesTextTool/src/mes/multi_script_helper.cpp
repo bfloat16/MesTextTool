@@ -181,7 +181,7 @@ namespace mes {
 	auto multi_script_helper::text_formater::format(std::string& text) -> void
 	{
 		utils::wstring::buffer buffer{ utils::to_u16str(text, CP_UTF8) };
-		
+
 		for (const auto& [key, value] : this->m_Config.Before) {
 			buffer.replace(key, value);
 		}
