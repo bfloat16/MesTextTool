@@ -56,6 +56,7 @@ MesTextTool-cp936-dc4.exe ; 以GBK编码打开DC4版本的Mes文件
 ```
 | 游戏| 简称 | 
 | :-----| :----: |
+|Princess Party ～プリンセスパーティー～|pp|
 |百花百狼/Hyakka Hyakurou|nightshade|
 |てんぷれ！|tmpl|
 |fortissimo//Akkord:Bsusvier | ffexa |
